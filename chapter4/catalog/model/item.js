@@ -2,7 +2,10 @@ var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
 
+mongoose.connect('mongodb://catalog_admin:some_password@mongo/catalog');
+
 var itemSchema = new Schema ({
+//   "_id" : Object,
   "itemId" : {type: String, index: {unique: true}},
   "itemName": String,
   "price": Number,
@@ -12,4 +15,4 @@ var itemSchema = new Schema ({
 
 var CatalogItem = mongoose.model('Item', itemSchema);
 
-module.exports = {CatalogItem : CatalogItem};
+module.exports = {CatalogItem : CatalogItem, connection : mongoose.connection};

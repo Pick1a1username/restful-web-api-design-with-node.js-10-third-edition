@@ -1,71 +1,78 @@
 var fs = require('fs');
 
-// const model = require('../model/item');
-// const CatalogItem = model.CatalogItem;
+const model = require('../model/item');
+const CatalogItem = model.CatalogItem;
 
-function readCatalogSync() {
-  var file = './data/catalog.json';
-  if (fs.existsSync(file)) {
-    var content = fs.readFileSync(file);
-    var catalog = JSON.parse(content);
-    console.log(catalog);
-    return catalog;
-  }
-  return undefined;
+const contentTypeJson = {
+	'Content-Type' : 'application/json'
+};
+const contentTypePlainText = {
+	'Content-Type' : 'text/plain'
 };
 
-exports.findItems = function(categoryId) {
-  console.log('Returning all items for categoryId: ' + categoryId);
-  var catalog = readCatalogSync();
-  if (catalog) {
-    var items = [];
-    for (var index in catalog.catalog) {
-      if (catalog.catalog[index].categoryId === categoryId) {
-        var category = catalog.catalog[index];
-        for (var itemIndex in category.items) {
-          items.push(category.items[itemIndex]);
-        }
-      }
-    }
-    return items;
-  }
-  return undefined;
-};
+// function readCatalogSync() {
+//   var file = './data/catalog.json';
+//   if (fs.existsSync(file)) {
+//     var content = fs.readFileSync(file);F
+//     var catalog = JSON.parse(content);
+//     console.log(catalog);
+//     return catalog;
+//   }
+//   return undefined;
+// };
 
-exports.findItem = function(categoryId, itemId) {
-  console.log('Looking for item with id' + itemId);
-  var catalog = readCatalogSync();
-  if (catalog) {
-    for (var index in catalog.catalog) {
-      if (catalog.catalog[index].categoryId === categoryId) {
-        var category = catalog.catalog[index];
-        for (var itemIndex in category.items) {
-          if (category.items[itemIndex].itemId === itemId) {
-            return category.items[itemIndex];
-          }
-        }
-      }
-    }
-  }
-  return undefined;
-};
+// exports.findItems = function(categoryId) {
+//   console.log('Returning all items for categoryId: ' + categoryId);
+//   var catalog = readCatalogSync();
+//   if (catalog) {
+//     var items = [];
+//     for (var index in catalog.catalog) {
+//       if (catalog.catalog[index].categoryId === categoryId) {
+//         var category = catalog.catalog[index];
+//         for (var itemIndex in category.items) {
+//           items.push(category.items[itemIndex]);
+//         }
+//       }
+//     }
+//     return items;
+//   }
+//   return undefined;
+// };
 
-exports.findCategories = function() {
-  console.log('Returning all categories');
-  var catalog = readCatalogSync();
-  if (catalog) {
-    var categories = [];
-    for (var index in catalog.catalog) {
-      var category = {};
-      category["categoryId"] = catalog.catalog[index].categoryId;
-      category["categoryName"] = catalog.catalog[index].categoryName;
+// exports.findItem = function(categoryId, itemId) {
+//   console.log('Looking for item with id' + itemId);
+//   var catalog = readCatalogSync();
+//   if (catalog) {
+//     for (var index in catalog.catalog) {
+//       if (catalog.catalog[index].categoryId === categoryId) {
+//         var category = catalog.catalog[index];
+//         for (var itemIndex in category.items) {
+//           if (category.items[itemIndex].itemId === itemId) {
+//             return category.items[itemIndex];
+//           }
+//         }
+//       }
+//     }
+//   }
+//   return undefined;
+// };
 
-      categories.push(category);
-    }
-    return categories;
-  }
-  return [];
-};
+// exports.findCategories = function() {
+//   console.log('Returning all categories');
+//   var catalog = readCatalogSync();
+//   if (catalog) {
+//     var categories = [];
+//     for (var index in catalog.catalog) {
+//       var category = {};
+//       category["categoryId"] = catalog.catalog[index].categoryId;
+//       category["categoryName"] = catalog.catalog[index].categoryName;
+
+//       categories.push(category);
+//     }
+//     return categories;
+//   }
+//   return [];
+// };
 
 exports.remove = function (request, response) {
   console.log('Deleting item with id: ' + request.body.itemId);
@@ -175,7 +182,8 @@ exports.findItemsByCategory = function (category, response) {
 };
 
 exports.findItemById = function (itemId, response) {
-  CatalogItem.findOne({itemId: itemId}, function(error, result) {
+  CatalogItem.findOne({ "itemId": itemId}, function(error, result) {
+    console.log(result);
     if (error) {
       console.error(error);
       response.writeHead(500, contentTypePlainText);
@@ -199,6 +207,7 @@ exports.findItemById = function (itemId, response) {
 
 exports.findAllItems = function (response) {
   CatalogItem.find({}, (error, result) => {
+    console.log(result);
     if (error) {
       console.error(error);
       return null;

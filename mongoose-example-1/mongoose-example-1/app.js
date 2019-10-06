@@ -1,7 +1,24 @@
 var mongoose = require('mongoose');
 
+var Schema = mongoose.Schema;
+
+mongoose.connect('mongodb://catalog_admin:some_password@mongo/catalog');
+
+var itemSchema = new Schema ({
+  // "_id" : mongoose.Schema.Types.ObjectId,
+  "itemId" : {type: String, index: {unique: true}},
+  "itemName": String,
+  "price": Number,
+  "currency": String,
+  "categories": [String]
+});
+
+// https://stackoverflow.com/questions/40079200/how-to-declare-collection-name-and-model-name-in-mongoose/40079267
+// When the collection is not specified, mongoose will use the collection named as `the name of the model` + `s`.
+var CatalogItem = mongoose.model('item', itemSchema);
+
 /**
-This is how to create a new database and an new user for this app.
+This is how to create a new database and an new user for this test.
 
 > use catalog
 > db.createUser(
@@ -48,27 +65,15 @@ This is how to create a new database and an new user for this app.
 >
  */
 
-beforeEach(function (done) {
-  function clearDatabase() {
-    for (var i in mongoose.connection.collections) {
-      mongoose.connection.collections[i].remove(function() {});
-    }
-    return done();
-  }
-  if (mongoose.connection.readyState === 0) {
-    // mongoose.connect(config.db.test, function (err) {
-    mongoose.connect('mongodb://catalog_admin:some_password@mongo/catalog', function (err) {
-      if (err) {
-        throw err;
-      }
-      return clearDatabase();
-    });
-  } else {
-    return clearDatabase();
-  }
-});
 
-afterEach(function (done) {
-  mongoose.disconnect();
-  return done();
+CatalogItem.find({}, (error, result) => {
+  console.log(result);
+  if (error) {
+    console.error(error);
+  }
+  if (result != null) {
+    console.log(result);
+  } else {
+    console.log(result);
+  }
 });
