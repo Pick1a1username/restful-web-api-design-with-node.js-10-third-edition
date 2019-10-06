@@ -6,6 +6,8 @@ services:
     image: node:10-jessie
     restart: always
     command: ["tail", "-f", "/dev/null"]
+    ports:
+      - 3000:3000
     volumes:
       - ../catalog:/root/app
     

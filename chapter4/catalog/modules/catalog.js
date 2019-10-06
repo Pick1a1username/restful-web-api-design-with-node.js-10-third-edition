@@ -1,5 +1,8 @@
 var fs = require('fs');
 
+// const model = require('../model/item');
+// const CatalogItem = model.CatalogItem;
+
 function readCatalogSync() {
   var file = './data/catalog.json';
   if (fs.existsSync(file)) {

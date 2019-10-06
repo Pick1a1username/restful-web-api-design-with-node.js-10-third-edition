@@ -1,13 +1,16 @@
 var express = require('express');
+
 var catalog = require('../modules/catalog');
+var model = require('../model/item');
 
 var router = express.Router();
 
 router.get('/', function(request, response, next) {
-  var categories = catalog.findCategories();
-  response.json(categories);
+  // var categories = catalog.findCategories();
+  // response.json(categories);
+  catalog.findAllItems(response);
 });
-  
+
 router.get('/:categoryId', function(request, response, next) {
   var categories = catalog.findItems(request.params.categoryId);
   if (categories === undefined) {
@@ -28,4 +31,26 @@ router.get('/:categoryId/:itemId', function(request, response, next) {
   }
 });
 
+router.get('/item/:itemId', function(request, response, next) {
+  console.log(request.url + ' : querying for ' + request.params.itemId);
+  catalog.findItemById(request.params.itemId, response);
+});
+
+// Is it okay to use '/', not '/category/item/...'?
+router.post('/', function(request, response, next) {
+  console.log('Saving item using POST method');
+  catalog.saveItem(request, response);
+});
+
+router.put('/', function(request, response, next) {
+  console.log('Saving item using PUT method');
+  catalog.saveItem(request, response);
+});
+
+router.delete('/item/:itemId', function(request, response, next) {
+  console.log('Deleting item with id: ' + request.params.itemId);
+  catalog.remove(request, response);
+});
+
 module.exports = router;
+
