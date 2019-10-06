@@ -32,7 +32,7 @@ router.get('/v1/:categoryId', function(request, response, next) {
 });
 
 router.get('/v1/:categoryId/:itemId', function(request, response, next) {
-  var item = catalog.findItem(request.params.categoryId, request.params.itemId);
+  var item = catalogV1.findItem(request.params.categoryId, request.params.itemId);
   if (item === undefined) {
     response.writeHead(404, {'Content-Type' : 'text/plain'});
     response.end('Not found');
@@ -43,17 +43,17 @@ router.get('/v1/:categoryId/:itemId', function(request, response, next) {
 
 router.post('/v1/', function(request, response, next) {
   console.log('Saving item using POST method');
-  catalog.saveItem(request, response);
+  catalogV1.saveItem(request, response);
 });
 
 router.put('/v1/', function(request, response, next) {
   console.log('Saving item using PUT method');
-  catalog.saveItem(request, response);
+  catalogV1.saveItem(request, response);
 });
 
 router.delete('/v1/item/:itemId', function(request, response, next) {
   console.log('Deleting item with id: ' + request.params.itemId);
-  catalog.remove(request, response);
+  catalogV1.remove(request, response);
 });
 
 // Version 2
