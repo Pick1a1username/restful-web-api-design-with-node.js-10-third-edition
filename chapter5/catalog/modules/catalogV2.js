@@ -3,6 +3,14 @@ var fs = require('fs');
 const model = require('../model/item');
 const CatalogItem = model.CatalogItem;
 
+const contentTypeJson = {
+	'Content-Type' : 'application/json'
+};
+const contentTypePlainText = {
+	'Content-Type' : 'text/plain'
+};
+
+
 function readCatalogSync() {
   var file = './data/catalog.json';
   if (fs.existsSync(file)) {

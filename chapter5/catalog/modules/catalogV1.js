@@ -3,6 +3,14 @@ var fs = require('fs');
 const model = require('../model/item');
 const CatalogItem = model.CatalogItem;
 
+const contentTypeJson = {
+	'Content-Type' : 'application/json'
+};
+const contentTypePlainText = {
+	'Content-Type' : 'text/plain'
+};
+
+
 function readCatalogSync() {
   var file = './data/catalog.json';
   if (fs.existsSync(file)) {
@@ -14,41 +22,41 @@ function readCatalogSync() {
   return undefined;
 };
 
-exports.findItems = function(categoryId) {
-  console.log('Returning all items for categoryId: ' + categoryId);
-  var catalog = readCatalogSync();
-  if (catalog) {
-    var items = [];
-    for (var index in catalog.catalog) {
-      if (catalog.catalog[index].categoryId === categoryId) {
-        var category = catalog.catalog[index];
-        for (var itemIndex in category.items) {
-          items.push(category.items[itemIndex]);
-        }
-      }
-    }
-    return items;
-  }
-  return undefined;
-};
+// exports.findItems = function(categoryId) {
+//   console.log('Returning all items for categoryId: ' + categoryId);
+//   var catalog = readCatalogSync();
+//   if (catalog) {
+//     var items = [];
+//     for (var index in catalog.catalog) {
+//       if (catalog.catalog[index].categoryId === categoryId) {
+//         var category = catalog.catalog[index];
+//         for (var itemIndex in category.items) {
+//           items.push(category.items[itemIndex]);
+//         }
+//       }
+//     }
+//     return items;
+//   }
+//   return undefined;
+// };
 
-exports.findItem = function(categoryId, itemId) {
-  console.log('Looking for item with id' + itemId);
-  var catalog = readCatalogSync();
-  if (catalog) {
-    for (var index in catalog.catalog) {
-      if (catalog.catalog[index].categoryId === categoryId) {
-        var category = catalog.catalog[index];
-        for (var itemIndex in category.items) {
-          if (category.items[itemIndex].itemId === itemId) {
-            return category.items[itemIndex];
-          }
-        }
-      }
-    }
-  }
-  return undefined;
-};
+// exports.findItem = function(categoryId, itemId) {
+//   console.log('Looking for item with id' + itemId);
+//   var catalog = readCatalogSync();
+//   if (catalog) {
+//     for (var index in catalog.catalog) {
+//       if (catalog.catalog[index].categoryId === categoryId) {
+//         var category = catalog.catalog[index];
+//         for (var itemIndex in category.items) {
+//           if (category.items[itemIndex].itemId === itemId) {
+//             return category.items[itemIndex];
+//           }
+//         }
+//       }
+//     }
+//   }
+//   return undefined;
+// };
 
 exports.findCategories = function() {
   console.log('Returning all categories');
