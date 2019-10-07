@@ -80,6 +80,14 @@ router.get('/item/:itemId/image', function(request, response) {
   catalogV2.getImage(gfs, request, response);
 });
 
+/**
+ * Example:
+ * 
+ * ```
+ * $ curl -vv -X POST localhost:3000/catalog/v2/item/3/image -H 'Content-Type: application/binary' --data-binary '@dhcp_issue.png' 
+ * ```
+ * 
+ */
 router.post('/v2/item/:itemId/image', function(request, response) {
   var gfs = Grid(model.connection.db, mongoose.mongo);
   catalogV2.saveImage(gfs, request, response);

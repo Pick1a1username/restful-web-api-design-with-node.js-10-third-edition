@@ -11,16 +11,16 @@ const contentTypePlainText = {
 };
 
 
-function readCatalogSync() {
-  var file = './data/catalog.json';
-  if (fs.existsSync(file)) {
-    var content = fs.readFileSync(file);
-    var catalog = JSON.parse(content);
-    console.log(catalog);
-    return catalog;
-  }
-  return undefined;
-};
+// function readCatalogSync() {
+//   var file = './data/catalog.json';
+//   if (fs.existsSync(file)) {
+//     var content = fs.readFileSync(file);
+//     var catalog = JSON.parse(content);
+//     console.log(catalog);
+//     return catalog;
+//   }
+//   return undefined;
+// };
 
 // exports.findItems = function(categoryId) {
 //   console.log('Returning all items for categoryId: ' + categoryId);

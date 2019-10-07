@@ -17,6 +17,8 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: mongoadmin
       MONGO_INITDB_ROOT_PASSWORD: thisispassword
+    ports:
+      - 27017:27017
 
   mongo-express:
     image: mongo-express
