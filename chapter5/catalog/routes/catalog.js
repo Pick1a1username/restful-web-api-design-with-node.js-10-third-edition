@@ -70,6 +70,14 @@ router.get('/v2/items', function(request, response) {
   }
 });
 
+/**
+ * Example
+ * 
+ * ```
+ * $ curl -vv  localhost:3000/catalog/v2/item/3/image -o asdf.png
+ * ```
+ * 
+ */
 router.get('/v2/item/:itemId/image', function(request, response) {
   var gfs = Grid(model.connection.db, mongoose.mongo);
   catalogV2.getImage(gfs, request, response);
