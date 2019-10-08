@@ -182,8 +182,8 @@ exports.findItemsByCategory = function (category, response) {
   });
 };
 
-exports.findItemById = function (itemId, response) {
-  CatalogItem.findOne({itemId: itemId}, function(error, result) {
+exports.findItemById = function (gfs, request, response) {
+  CatalogItem.findOne({itemId: request.params.itemId}, function(error, result) {
     if (error) {
       console.error(error);
       response.writeHead(500, contentTypePlainText);
@@ -197,10 +197,20 @@ exports.findItemById = function (itemId, response) {
         return;
       }
 
-      if (response != null) {
-        response.setHeader('Content-Type', 'application/json');
-        response.send(result);
-      }
+      var options = {
+        filename: result.itemId,
+      };
+      
+      gfs.exist(options, function(error, found) {
+        if (found) {
+          response.setHeader('Content-Type', 'application/json');
+          var imageUrl = request.protocol + '://' + request.get('host') + request.baseUrl + request.path + '/image';
+          response.setHeader('Image-Url', imageUrl);
+          response.send(result);
+        } else {
+          response.json(result);
+        }
+      });
     }
   });
 };
@@ -275,7 +285,10 @@ function readImage(gfs, request, response) {
     return;
   });
 
+  var itemImageUrl = request.protocol + '://' + request.get('host') + request.baseUrl + request.path;
+  var itemUrl = itemImageUrl.substring(0, itemImageUrl.indexOf('/image'));
   response.setHeader('Content-Type', 'image/jpeg');
+  response.setHeader('Item-Url', itemUrl);
   imageStream.pipe(response);
 };
 

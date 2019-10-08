@@ -70,6 +70,13 @@ router.get('/v2/items', function(request, response) {
   }
 });
 
+router.get('/v2/item/:itemId', function(request, response, next) {
+  console.log(request.url + ' : querying for ' + request.params.itemId);
+
+  var gfs = Grid(model.connection.db, mongoose.mongo);
+  catalogV2.findItemById(gfs, request, response);
+});
+
 /**
  * Example
  * 
