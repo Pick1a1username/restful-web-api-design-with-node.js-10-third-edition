@@ -1,14 +1,19 @@
 var express = require('express');
 
+
 const mongoose = require('mongoose');
 const Grid = require('gridfs-stream');
 const url = require('url');
+const CacheControl = require("express-cache-control");
+
 
 var catalogV1 = require('../modules/catalogV1');
 var catalogV2 = require('../modules/catalogV2');
 var model = require('../model/item');
 
 var router = express.Router();
+
+var cache = new CacheControl().middleware;
 
 mongoose.connect('mongodb://catalog_admin:some_password@mongo/catalog');
 var connection = mongoose.connection;
@@ -67,14 +72,14 @@ router.delete('/v1/item/:itemId', function(request, response, next) {
  * 
  * Note that 'limit' should be specified with 'page', although the textbook don't specify 'limit' with 'page'.
  */
-router.get('/v2/', function(request, response) {
+router.get('/v2/', cache('minutes', 1), function(request, response) {
   var getParams = url.parse(request.url, true).query;
 
-  if (getParams['page'] != null) {
-    console.log('Page specified');
+  if (getParams['page'] != null || getParams['limit'] != null) {
+    // console.log('Page specified');
     catalogV2.paginate(model.CatalogItem, request, response);
   } else {
-    console.log('No page specified');
+    // console.log('No page specified');
     var key = Object.keys(getParams)[0];
     var value = getParams[key];
     catalogV2.findItemsByAttribute(key, value, response);
@@ -162,6 +167,23 @@ router.delete('/item/:itemId/image', function(request, response) {
  * ```
  * $ curl -vv -L localhost:3000/catalog/
  * ```
+ * 
+ * ## When it comes to pages...
+ * 
+ * This doesn't work.
+ * 
+ * ```
+ * $ curl -vv -L -G localhost:3000/catalog -d 'limit=1' -d 'page=3'
+ * ```
+ * 
+ * This doesn't work....
+ * 
+ * ```
+ * $ curl -vv -L localhost:3000/catalog?limit=1\&page=3
+ * ```
+ * 
+ * 
+ * https://stackoverflow.com/questions/13371284/curl-command-line-url-parameters
  */
 router.get('/', function(request, response) {
   console.log('Redirecting to v2');
