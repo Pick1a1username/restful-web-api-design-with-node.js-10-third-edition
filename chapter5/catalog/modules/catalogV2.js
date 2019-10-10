@@ -340,10 +340,12 @@ exports.paginate = function(model, request, response) {
   var page = request.query.page;
 
   if (pageSize === undefined) {
+    console.log('No limit specified');
     pageSize = 100;
   }
 
   if (page === undefined) {
+    console.log('No page specified');
     page = 1;
   }
 
