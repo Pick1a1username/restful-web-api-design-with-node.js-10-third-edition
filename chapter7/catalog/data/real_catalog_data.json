@@ -1,0 +1,31 @@
+[
+    {
+        "itemId": 3,
+        "itemName": "Sports Watch 11",
+        "price": 99,
+        "currency": "USD",
+        "categories": [
+            "Watches"
+        ]
+    },
+    {
+        "itemId": 9,
+        "itemName": "Sports Watch 4",
+        "price": 100,
+        "currency": "EUR",
+        "categories": [
+            "Watches",
+            "Sports Watches"
+        ]
+    },
+    {
+        "itemId": 2,
+        "itemName": "Sports Watch 2",
+        "price": 100,
+        "currency": "EUR",
+        "categories": [
+            "Watches",
+            "Sports Watches"
+        ]
+    }
+]
