@@ -2,6 +2,7 @@ var express = require('express');
 
 const mongoose = require('mongoose');
 const Grid = require('gridfs-stream');
+const url = require('url');
 
 var catalogV1 = require('../modules/catalogV1');
 var catalogV2 = require('../modules/catalogV2');
@@ -18,6 +19,7 @@ var gfs = Grid({ db: connection.db }, mongoose.mongo);
 // Version 1
 
 router.get('/v1/', function(request, response, next) {
+  console.log('/v1/');
   catalogV1.findAllItems(response);
 });
 
@@ -57,6 +59,18 @@ router.delete('/v1/item/:itemId', function(request, response, next) {
 });
 
 // Version 2
+
+router.get('/v2/', function(request, response) {
+  var getParams = url.parse(request.url, true).query;
+
+  if (getParams['page'] != null) {
+    catalogV2.paginate(model.CatalogItem, request, response);
+  } else {
+    var key = Object.keys(getParams)[0];
+    var value = getParams[key];
+    catalogV2.findItemsByAttribute(key, value, response);
+  }
+});
 
 router.get('/v2/items', function(request, response) {
   var getParams = url.parse(request.url, true).query;
@@ -135,10 +149,15 @@ router.delete('/item/:itemId/image', function(request, response) {
 
 // Current Version
 
+/**
+ * ```
+ * $ curl -vv  -L localhost:3000/catalog/
+ * ```
+ */
 router.get('/', function(request, response) {
-  console.log('Redirecting to v1');
-  response.writeHead(301, {'Location' : '/catalog/v1/'});
-  response.end('Version 1 is moved to /catalog/v1/: ');
+  console.log('Redirecting to v2');
+  response.writeHead(302, {'Location' : '/catalog/v2/'});
+  response.end('Version 2 is available at /catalog/v2/: ');
 });
 
 module.exports = router;

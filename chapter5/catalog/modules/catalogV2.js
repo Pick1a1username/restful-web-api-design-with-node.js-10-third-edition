@@ -158,17 +158,21 @@ exports.saveItem = function(request, response) {
   });
 };
 
-exports.findItemsByCategory = function (category, response) {
-  CatalogItem.find({categories: category}, function(error, result) {
+exports.findItemsByCategory = function (key, value, response) {
+  var filter = {};
+  filter[key] = value;
+
+  CatalogItem.find(filter, function(error, result) {
     if (error) {
       console.error(error);
-      response.writeHead(500, { 'Content-Type': 'text/plain' });
+      response.writeHead(500, contentTypePlainText);
+      response.end('Internal server error');
       return;
     } else {
       if (!result) {
         if (response != null) {
-          response.writeHead(404, contentTypePlainText);
-          response.end('Not Found');
+          response.writeHead(200, contentTypeJson);
+          response.end('{}');
         }
         return;
       }
@@ -177,7 +181,6 @@ exports.findItemsByCategory = function (category, response) {
         response.setHeader('Content-Type', 'application/json');
         response.send(result);
       }
-      console.log(result);
     }
   });
 };
@@ -332,3 +335,25 @@ exports.deleteImage = function(gfs, mongodb, itemId, response) {
   });
 };
 
+exports.paginate = function(model, request, response) {
+  var pageSize = request.query.limit;
+  var page = request.query.page;
+
+  if (pageSize === undefined) {
+    pageSize = 100;
+  }
+
+  if (page === undefined) {
+    page = 1;
+  }
+
+  model.paginate({}, {page: page, limit: pageSize}, function (error, result) {
+    if (error) {
+      console.log(error);
+      response.writeHead('500', {'Content-Type' : 'text/plain'});
+      response.end('Internal Server Error');
+    } else {
+      response.json(result);
+    }
+  });
+};

@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var mongoosePaginate = require('mongoose-paginate');
 
 var Schema = mongoose.Schema;
 
@@ -11,6 +12,9 @@ var itemSchema = new Schema ({
   "currency": String,
   "categories": [String]
 });
+
+console.log('paginate');
+itemSchema.plugin(mongoosePaginate);
 
 var CatalogItem = mongoose.model('Item', itemSchema);
 
