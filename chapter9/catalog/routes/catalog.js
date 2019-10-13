@@ -5,7 +5,8 @@ const mongoose = require('mongoose');
 const Grid = require('gridfs-stream');
 const url = require('url');
 const CacheControl = require("express-cache-control");
-
+const passport = require('passport');
+const BasicStrategy = require('passport-http').BasicStrategy;
 
 var catalogV1 = require('../modules/catalogV1');
 var catalogV2 = require('../modules/catalogV2');
@@ -20,12 +21,16 @@ var connection = mongoose.connection;
 // https://mongodb.github.io/node-mongodb-native/api-generated/grid.html
 var gfs = Grid({ db: connection.db }, mongoose.mongo);
 
+passport.use(new BasicStrategy(function(username, password, done) {
+  if (username == 'user' && password == 'default') {
+    return done(null, username);
+  }
+}));
 
 // Version 1
 
-router.get('/v1/', function(request, response, next) {
-  console.log('/v1/');
-  catalogV1.findAllItems(response);
+router.get('/v1/', passport.authenticate('basic', { session: false }), function(request, response, next) {
+    catalogV1.findAllItems(response);
 });
 
 router.get('/v1/item/:itemId', function(request, response, next) {
@@ -72,11 +77,12 @@ router.delete('/v1/item/:itemId', function(request, response, next) {
  * 
  * Note that 'limit' should be specified with 'page', although the textbook don't specify 'limit' with 'page'.
  */
-router.get('/v2/', cache('minutes', 1), function(request, response) {
+
+router.get('/v2/', cache('minutes', 1), passport.authenticate('basic', { session: false }), function(request, response, next) {
   var getParams = url.parse(request.url, true).query;
 
   if (getParams['page'] != null || getParams['limit'] != null) {
-    // console.log('Page specified');
+    // console.log('Page specified');s
     catalogV2.paginate(model.CatalogItem, request, response);
   } else {
     // console.log('No page specified');
@@ -201,7 +207,7 @@ router.delete('/v2/item/:itemId', function(request, response, next) {
  * 
  * https://stackoverflow.com/questions/13371284/curl-command-line-url-parameters
  */
-router.get('/', function(request, response) {
+router.get('/', passport.authenticate('basic', { session: false }), function(request, response, next) {
   console.log('Redirecting to v2');
   response.writeHead(302, {'Location' : '/catalog/v2/'});
   response.end('Version 2 is available at /catalog/v2/: ');
