@@ -22,9 +22,19 @@ var connection = mongoose.connection;
 var gfs = Grid({ db: connection.db }, mongoose.mongo);
 
 passport.use(new BasicStrategy(function(username, password, done) {
-  if (username == 'user' && password == 'default') {
-    return done(null, username);
-  }
+  AuthUser.findOne({username: username, password: password}, function(error, user) {
+    if (error) {
+      return done(error);
+    } else {
+      if (!user) {
+        console.log('unknown user');
+        return done(error);
+      } else {
+        console.log(user.username + 'authenticated successfully');
+        return done(null, user);
+      }
+    }
+  });
 }));
 
 // Version 1

@@ -4,6 +4,8 @@ var expressPaginate = require('express-paginate');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var https = require('https');
+var fs = require('fs');
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./static/swagger.json');
@@ -11,6 +13,12 @@ const swaggerDocument = require('./static/swagger.json');
 var catalogRouter = require('./routes/catalog');
 
 var app = express();
+
+app.set('port', process.env.PORT || 3443);
+
+var options = {key: fs.readFileSync('./ssl/catalog.pem'),
+  cert: fs.readFileSync('./ssl/catalog.crt')
+};
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -42,3 +50,5 @@ app.use(function(err, req, res, next) {
 });
 
 module.exports = app;
+
+https.createServer(options, app).listen(app.get('port'));
